@@ -65,9 +65,7 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-
-
   MYWIFI_handle();
-  NETWORK_handle;
+  NETWORK_handle();
 
 }
