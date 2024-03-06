@@ -13,8 +13,9 @@
   MACROS
   ==============================================================================
 */
-#define WIFI_PASSWORD   "723C92442CA9"
-#define WIFI_TIMEOUT_MS 20000 // 20 secs 
+//#define OLD_WIFI_PASSWORD   "723C92442CA9"
+#define WIFI_PASSWORD   "6v6uxjseyryE"
+#define WIFI_TIMEOUT_MS 20000 // 20 secs for scanninb 
 
 
 #define MAX_TAB_SIZE(a) (sizeof(a)/sizeof(a[0]))
@@ -53,7 +54,7 @@ static bool transitionScanConnect();
 static void stateWifiConnect();
 static bool transitionConnectIdle();
 static bool transitionConnectBind();
-static void stateNetworkConnect();
+static void stateNetworkBind();
 static bool transitionBindIdle();
 /*==============================================================================
   GLOBAL DATA
@@ -104,7 +105,7 @@ void MYWIFI_init(void)
   StateIdle =    _machine.addState(&stateIdle);
   StateScan =    _machine.addState(&stateWifiScan);
   StateConnect = _machine.addState(&stateWifiConnect);
-  StateBind =    _machine.addState(&stateNetworkConnect);
+  StateBind =    _machine.addState(&stateNetworkBind);
 }
 
 //------------------------------------------------------------------------------
@@ -114,6 +115,7 @@ void MYWIFI_start(void)
     _chipId |= ((ESP.getEfuseMac() >> (40 - i)) & 0xff) << i;
   }
   if (_chipId != 0) {
+    Serial.println("MAC was found");
     _wifiModemState = MODEM_ACTIVE;
   }
   StateIdle->addTransition(&transitionIdleScan, StateScan);
@@ -211,23 +213,25 @@ static void connectToWifi(WifiInfo_t* pBestNetwork)
   // Wait ...
   delay(100);
 
+   // try to connect to your SSID
+  startAttemp =  millis();
   //WiFi.begin(myString,WIFI_PASSWORD);
   pBestNetwork->ssid.toCharArray(_ssidBuf, sizeof(_ssidBuf));
   WiFi.begin((const char*)_ssidBuf, WIFI_PASSWORD);
 
-  if ((WiFi.status() != WL_CONNECTED) && (millis() - startAttemp < WIFI_TIMEOUT_MS)) {
+  while ((WiFi.status() != WL_CONNECTED) && (millis() - startAttemp < WIFI_TIMEOUT_MS)) {
     Serial.print(".");
     delay(100);
   }
 
   if ((WiFi.status() != WL_CONNECTED) && (millis() - startAttemp < WIFI_TIMEOUT_MS)) {
-    Serial.println("Failed To Connect ...");
+    Serial.println("Failed To Connect to WiFi ...");
     _wifiConnectState = WIFI_MODEM_NOT_CONNECTED;
     _pWifiConnectStateCb(_wifiConnectState);
   }
   else
   {
-    Serial.println("Connected!");
+    Serial.println("Connected to WiFi!");
     _wifiConnectState = WIFI_MODEM_CONNECTED;
     _pWifiConnectStateCb(_wifiConnectState);
   }
@@ -309,10 +313,10 @@ static bool transitionConnectBind() {
   }
 }
 //------------------------------------------------------------------------------
-static void stateNetworkConnect() {
-  Serial.println("stateNetworkConnect");
+static void stateNetworkBind() {
+//  Serial.println("stateNetworkBind");
 }
 //------------------------------------------------------------------------------
 static bool transitionBindIdle() {
-  return true;
+  return false;
 }

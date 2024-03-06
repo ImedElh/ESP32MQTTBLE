@@ -45,7 +45,7 @@ WiFiClient   _wifiClient;
 PubSubClient _mqttClient(_wifiClient);
 static char    _txData[MAX_TX_DATA];
 
-static bool _isNetworkActive = false;
+static bool _isNetworkActive = false; // initially network is not alive
 /*==============================================================================
   CONST DATA
   ==============================================================================
@@ -69,12 +69,19 @@ void NETWORK_start(void)
 
 void NETWORK_handle(void)
 {
-  //MYWIFI_registerWifiStatus(wifiStatusCb);
-  if (!_mqttClient.connected()) {
+  // Is there an alive session?
+ if(_isNetworkActive)
+ {
+    if (!_mqttClient.connected()) {
     reconnect();
+    }
+    _mqttClient.loop();
+    networkTx();
   }
-   _mqttClient.loop();
-   networkTx();
+  else
+  {
+    Serial.println("No mqtt alive session !");
+  }
 }
 
 /*==============================================================================
@@ -92,7 +99,7 @@ static void wifiStatusCb(WIFI_ConnectState_t wifiConnectState)
     reconnect();
     _isNetworkActive = true;
   }
-  if(WIFI_MODEM_NOT_CONNECTED)
+  if(wifiConnectState == WIFI_MODEM_NOT_CONNECTED)
   {
     _isNetworkActive = false;
   }
@@ -121,13 +128,13 @@ static void setupMQTT() {
 // Description here
 static void reconnect() {
   Serial.println("Connecting to MQTT Broker...");
-  while (!_mqttClient.connected()) {
+  if (!_mqttClient.connected()) {
     Serial.println("Reconnecting to MQTT Broker..");
     String clientId = "ESP32Client-";
     clientId += String(random(0xffff), HEX);
 
     if (_mqttClient.connect(clientId.c_str())) {
-      Serial.println("Connected.");
+      Serial.println("Connected to mqtt broker");
       // subscribe to topic
       _mqttClient.subscribe("/swa/commands");
     }
