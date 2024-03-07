@@ -20,6 +20,8 @@
 #define MQTT_PORT       1883
 
 #define MAX_TX_DATA    50 // 50 bytes
+
+#define TX_TIMEOUT_MS     60000 // 1 minute
 /*==============================================================================
   TYPES
   ==============================================================================
@@ -147,7 +149,7 @@ static void reconnect() {
 static void networkTx(void)
 {
   long now = millis();
-  if (now - _last_time > 60000) {
+  if (now - _last_time > TX_TIMEOUT_MS) {
     // Send data
     float temp = 24.564;
     float hum = 16.45;
