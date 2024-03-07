@@ -144,7 +144,7 @@ static DescriptorCallbacks dscCallbacks;
 static CharacteristicCallbacks chrCallbacks;
 
 
-void setup() {
+void SRVBLE_init(void) {
     Serial.begin(115200);
     Serial.println("Starting NimBLE Server");
 
@@ -243,7 +243,7 @@ void setup() {
     Serial.println("Advertising Started");
 }
 
-
+#ifdef SKIP
 void loop() {
   /** Do your thing here, this just spams notifications to all connected clients */
     if(pServer->getConnectedCount()) {
@@ -258,3 +258,4 @@ void loop() {
 
   delay(2000);
 }
+#endif
