@@ -10,7 +10,9 @@
 #define STORAGE_H_
 
 #include "Arduino.h"
-#include "config.h"
+
+
+class Config;   // forward definition needed
 
 class Storage {
     protected:
@@ -21,9 +23,8 @@ class Storage {
     public:
         Storage();
         ~Storage();
-
         bool begin(const char * name);
-        bool configure(const Config::Data *pData);
+        bool configure(Config &configData);
         void end();
         bool clear();
         bool remove(const char * key);

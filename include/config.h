@@ -11,7 +11,7 @@
 
 #include <Arduino.h>
 #include "keys.h"
-
+#include "storage.h"
 
 
 
@@ -28,6 +28,7 @@ private:
 
 public:
     Config(String mkey = MAGIC_VAL, String ssid = SSID_VAL, String wPwd = WIFI_PWD_VAL, uint32_t bPwd  = BLE_PWD_VAL, bool bStatus = false,uint16_t del = BLE_PWD_VAL);
+    // Member Function of another class (storage) as Friend Function
     friend  bool Storage::configure(Config &configData);
     ~Config();
     String getMagicKey(void);
