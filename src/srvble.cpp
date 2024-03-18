@@ -190,7 +190,7 @@ void SRVBLE_init(void) {
 
     pBeefCharacteristic->setValue("Burger");
     pBeefCharacteristic->setCallbacks(&chrCallbacks);
-
+#ifdef SKIP
     /** 2904 descriptors are a special case, when createDescriptor is called with
      *  0x2904 a NimBLE2904 class is created with the correct properties and sizes.
      *  However we must cast the returned reference to the correct type as the method
@@ -199,7 +199,7 @@ void SRVBLE_init(void) {
     NimBLE2904* pBeef2904 = (NimBLE2904*)pBeefCharacteristic->createDescriptor("2904");
     pBeef2904->setFormat(NimBLE2904::FORMAT_UTF8);
     pBeef2904->setCallbacks(&dscCallbacks);
-
+#endif
 
     NimBLEService* pBaadService = pServer->createService("BAAD");
     NimBLECharacteristic* pFoodCharacteristic = pBaadService->createCharacteristic(
