@@ -1,4 +1,4 @@
-#define MAGIC_K         "MAGIC"
+#define MAGIC_K          "MAGIC"
 #define MAGIC_VAL        "IMHOB"
 
 #define WIFI_SSID_K     "SSID"
