@@ -163,7 +163,7 @@ void SRVBLE_init(void) {
      *  BLE_HS_IO_DISPLAY_YESNO   - Numeric comparison pairing
      *  BLE_HS_IO_NO_INPUT_OUTPUT - DEFAULT setting - just works pairing
      */
-    //NimBLEDevice::setSecurityIOCap(BLE_HS_IO_DISPLAY_ONLY); // use passkey
+    NimBLEDevice::setSecurityIOCap(BLE_HS_IO_DISPLAY_ONLY); // use passkey
     //NimBLEDevice::setSecurityIOCap(BLE_HS_IO_DISPLAY_YESNO); //use numeric comparison
 
     /** 2 different ways to set security - both calls achieve the same result.
@@ -172,7 +172,8 @@ void SRVBLE_init(void) {
      *  These are the default values, only shown here for demonstration.
      */
     //NimBLEDevice::setSecurityAuth(false, false, true);
-    NimBLEDevice::setSecurityAuth(/*BLE_SM_PAIR_AUTHREQ_BOND | BLE_SM_PAIR_AUTHREQ_MITM |*/ BLE_SM_PAIR_AUTHREQ_SC);
+   // NimBLEDevice::setSecurityAuth(/*BLE_SM_PAIR_AUTHREQ_BOND | BLE_SM_PAIR_AUTHREQ_MITM |*/ BLE_SM_PAIR_AUTHREQ_SC);
+    NimBLEDevice::setSecurityAuth(/*BLE_SM_PAIR_AUTHREQ_BOND */ BLE_SM_PAIR_AUTHREQ_MITM |BLE_SM_PAIR_AUTHREQ_SC);
 
     pServer = NimBLEDevice::createServer();
     pServer->setCallbacks(new ServerCallbacks());
@@ -183,8 +184,8 @@ void SRVBLE_init(void) {
                                                NIMBLE_PROPERTY::READ |
                                                NIMBLE_PROPERTY::WRITE |
                                /** Require a secure connection for read and write access */
-                                               NIMBLE_PROPERTY::READ_ENC |  // only allow reading if paired / encrypted
-                                               NIMBLE_PROPERTY::WRITE_ENC   // only allow writing if paired / encrypted
+                                               NIMBLE_PROPERTY::READ_AUTHEN |  // only allow reading if paired / encrypted
+                                               NIMBLE_PROPERTY::WRITE_AUTHEN  // only allow writing if paired / encrypted
                                               );
 
     pBeefCharacteristic->setValue("Burger");
