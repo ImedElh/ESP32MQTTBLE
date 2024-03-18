@@ -178,9 +178,9 @@ void SRVBLE_init(void) {
     pServer = NimBLEDevice::createServer();
     pServer->setCallbacks(new ServerCallbacks());
 
-    NimBLEService* pDeadService = pServer->createService("DEAD");
-    NimBLECharacteristic* pBeefCharacteristic = pDeadService->createCharacteristic(
-                                               "BEEF",
+    NimBLEService* pWifiCredService = pServer->createService("WIFICRED");
+    NimBLECharacteristic* pSsidCharacteristic = pWifiCredService->createCharacteristic(
+                                               "SSID",
                                                NIMBLE_PROPERTY::READ |
                                                NIMBLE_PROPERTY::WRITE |
                                /** Require a secure connection for read and write access */
@@ -188,8 +188,8 @@ void SRVBLE_init(void) {
                                                NIMBLE_PROPERTY::WRITE_AUTHEN  // only allow writing if paired / encrypted
                                               );
 
-    pBeefCharacteristic->setValue("Burger");
-    pBeefCharacteristic->setCallbacks(&chrCallbacks);
+    pSsidCharacteristic->setValue("SSID");
+    pSsidCharacteristic->setCallbacks(&chrCallbacks);
 #ifdef SKIP
     /** 2904 descriptors are a special case, when createDescriptor is called with
      *  0x2904 a NimBLE2904 class is created with the correct properties and sizes.
