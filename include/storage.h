@@ -9,6 +9,7 @@
 #ifndef STORAGE_H_
 #define STORAGE_H_
 
+#include <Preferences.h>
 #include "Arduino.h"
 
 
@@ -16,16 +17,16 @@ class Config;   // forward definition needed
 
 class Storage {
     protected:
-      //  uint32_t _handle;
-      //  bool _started;
-      //  bool _readOnly;
+      Preferences preference;
       bool _started;
+      String name;
     public:
         Storage();
         ~Storage();
         bool begin(const char * name);
-        bool configure(Config &configData);
-        void end();
+        bool configure(const Config &configData);
+        bool getConfiguration(Config *pconfigData);
+        bool end(const char * name);
         bool clear();
         bool remove(const char * key);
         size_t putValue(const char* key, String value);

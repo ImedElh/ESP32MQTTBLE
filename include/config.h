@@ -27,9 +27,10 @@ private:
    uint16_t delimiter; // IMED: It's not a key it's a just a delimiter for the config area and will be used in case of config growup + config struct should be aligned
 
 public:
-    Config(String mkey = MAGIC_VAL, String ssid = SSID_VAL, String wPwd = WIFI_PWD_VAL, uint32_t bPwd  = BLE_PWD_VAL, bool bStatus = false,uint16_t del = BLE_PWD_VAL);
+    Config(String mkey = MAGIC_VAL, String ssid = SSID_VAL, String wPwd = WIFI_PWD_VAL, uint32_t bPwd = BLE_PWD_VAL, bool bStatus = false,uint16_t del = DELIMITER_VAL);
     // Member Function of another class (storage) as Friend Function
-    friend  bool Storage::configure(Config &configData);
+    friend  bool Storage::configure(const Config &configData);
+    friend bool Storage::getConfiguration(Config *pconfigData);
     ~Config();
     String getMagicKey(void);
     String getSsid(void);

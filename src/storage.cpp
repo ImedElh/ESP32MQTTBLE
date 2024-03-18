@@ -9,14 +9,14 @@
   copies or substantial portions of the Software.
 */
 
-#include <Preferences.h>
+
 #include "storage.h"
 #include "config.h"
 
 
-Preferences preferences;
 
-Storage::Storage():_started(false){
+
+Storage::Storage():_started(false),name(""){
 
 }
 
@@ -28,53 +28,60 @@ bool Storage::begin(const char * name)
 {
   //Create a new storage space on the flash memory with the credentials namespace.
   // false= able to read and write
-  preferences.begin(name, false);
+  preference.begin(name, false);
+ // this->name = name;
+  this->name = name;
 
   // close the preferences 
-  preferences.end();
+  //preference.end();
 
   return true;
 }
 
-bool Storage::configure(Config &configData)
+bool Storage::configure(const Config &configData)
 {
   // Create many keys by using the putType() methods.
-  preferences.putString(MAGIC_K, configData.magic_key); 
-  preferences.putString(WIFI_SSID_K, configData.wifi_ssid); 
-  preferences.putString(WIFI_PWD_K,  configData.wifi_pwd);
-  preferences.putUInt(BLE_PWD_K,configData.ble_pwd);
-  preferences.putBool(BLE_CONFIG_STATUS_K,configData.ble_config_status);
-  preferences.putUInt(DELIMITER_K,configData.delimiter);
+  preference.putString(MAGIC_K, configData.magic_key); 
+  preference.putString(WIFI_SSID_K, configData.wifi_ssid); 
+  preference.putString(WIFI_PWD_K,  configData.wifi_pwd);
+  preference.putUInt(BLE_PWD_K,configData.ble_pwd);
+  preference.putBool(BLE_CONFIG_STATUS_K,configData.ble_config_status);
+  preference.putUInt(DELIMITER_K,configData.delimiter);
 
   Serial.println("Needed Credentials Saved using Preferences");
-  // close the preferences 
-  preferences.end();
+
 
   return true;
 }
 
-#ifdef SKIP
-bool Storage::getConfiguration(Config::Data *pData)
+
+bool Storage::getConfiguration(Config *pconfigData)
 {
+  // Create all configured data by using preferences.getXXX() methods.
+  pconfigData->magic_key = preference.getString(MAGIC_K, ""); 
+  pconfigData->wifi_ssid = preference.getString(WIFI_SSID_K, ""); 
+  pconfigData->wifi_pwd = preference.getString(WIFI_PWD_K, "");
+  pconfigData->ble_pwd =  preference.getUInt(BLE_PWD_K, 0);
+  pconfigData->ble_config_status =  preference.getBool(BLE_CONFIG_STATUS_K, 0);
+  pconfigData->delimiter =  preference.getUInt(DELIMITER_K, 0);
 
-  pData->wifi_ssid = preferences.getString("ssid", ""); 
-  pData->wifi_pwd = preferences.getString("password", "");
-
-  // Create many keys by using the putType() methods.
-  preferences.putString(MAGIC_K, pData->magic_key); 
-  preferences.putString(WIFI_SSID_K, pData->wifi_ssid); 
-  preferences.putString(WIFI_PWD_K,  pData->wifi_pwd);
-  preferences.putUInt(BLE_PWD_K,pData->ble_pwd);
-  preferences.putBool(BLE_CONFIG_STATUS_K,pData->ble_config_status);
-  preferences.putUInt(DELIMITER_K,pData->delimiter);
-
-  Serial.println("Needed Credentials Saved using Preferences");
+  Serial.println("Get all saved credentials");
   // close the preferences 
-  preferences.end();
+ // preference.end();
 
   return true;
 }
-#endif
+
+bool Storage::end(const char *name)
+{
+  if (strcmp(this->name.c_str(), name) == 0 )
+  {
+    // close the preferences 
+    preference.end();
+  }
+  return true;
+}
+
 #ifdef GET_CRED
 /*
   Rui Santos

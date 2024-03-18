@@ -10,6 +10,10 @@
 #include "WiFi.h"
 #include "mywifi.h"
 #include "network.h"
+#include "srvble.h"
+#include "config.h"
+#include "storage.h"
+
 
 
 /*==============================================================================
@@ -32,11 +36,13 @@
   ==============================================================================
 */
 
+Config checkConfig("XXX", "XXX", "XXX", 0x0, false,0x0);
+Storage myStorage;
 /*==============================================================================
   CONST DATA
   ==============================================================================
 */
-
+const Config  defConfig;
 /*==============================================================================
   INTERFACE FUNCTIONS
   ==============================================================================
@@ -54,18 +60,30 @@
 void setup() {
 
   Serial.begin(115200);
-  delay(2000);
+  /*  delay(2000);
   MYWIFI_init();
   NETWORK_init();
 
   MYWIFI_start();
   NETWORK_start();
+  */
+  myStorage.begin("MYCONFIG");
+  myStorage.getConfiguration(&checkConfig);
+  // Not configured yet?
+  if(checkConfig.getMagicKey() == MAGIC_VAL)
+  {
+   myStorage.configure(defConfig);
+  }
+  myStorage.end("MYCONFIG");
+ 
+
+  SRVBLE_init();
 
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
-  MYWIFI_handle();
+ /* MYWIFI_handle();
   NETWORK_handle();
-
+*/
 }
