@@ -36,7 +36,7 @@
   ==============================================================================
 */
 
-Config checkConfig("XXX", "XXX", "XXX", 0x0, false,0x0);
+Config myConfig("XXX", "XXX", "XXX", 0x0, false,0x0);
 Storage myStorage;
 /*==============================================================================
   CONST DATA
@@ -68,10 +68,11 @@ void setup() {
   NETWORK_start();
   */
   myStorage.begin("MYCONFIG");
-  myStorage.getConfiguration(&checkConfig);
+  myStorage.getConfiguration(&myConfig);
   // Not configured yet?
-  if(checkConfig.getMagicKey() == MAGIC_VAL)
+  if(myConfig.getMagicKey() != MAGIC_VAL)
   {
+   Serial.println("Config data already set");
    myStorage.configure(defConfig);
   }
   myStorage.end("MYCONFIG");
@@ -86,4 +87,5 @@ void loop() {
  /* MYWIFI_handle();
   NETWORK_handle();
 */
+  SRVBLE_loop();
 }

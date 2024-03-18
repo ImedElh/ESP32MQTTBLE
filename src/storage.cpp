@@ -77,6 +77,8 @@ bool Storage::end(const char *name)
   if (strcmp(this->name.c_str(), name) == 0 )
   {
     // close the preferences 
+    Serial.println("close the preference");
+    Serial.println(name);
     preference.end();
   }
   return true;
