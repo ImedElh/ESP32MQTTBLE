@@ -24,6 +24,7 @@
  */
 
 extern void SRVBLE_init(void);
+extern void SRVBLE_loop(void);
 //extern void NETWORK_start(void);
 //extern void NETWORK_handle(void);
 

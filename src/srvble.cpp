@@ -243,8 +243,8 @@ void SRVBLE_init(void) {
     Serial.println("Advertising Started");
 }
 
-#ifdef SKIP
-void loop() {
+
+void SRVBLE_loop() {
   /** Do your thing here, this just spams notifications to all connected clients */
     if(pServer->getConnectedCount()) {
         NimBLEService* pSvc = pServer->getServiceByUUID("BAAD");
@@ -258,4 +258,3 @@ void loop() {
 
   delay(2000);
 }
-#endif
