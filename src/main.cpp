@@ -35,7 +35,6 @@
   GLOBAL DATA
   ==============================================================================
 */
-
 Config myConfig("XXX", "XXX", "XXX", 0x0, false,0x0);
 Storage myStorage;
 /*==============================================================================
@@ -76,6 +75,7 @@ void setup() {
    myStorage.configure(defConfig);
   }
   myStorage.end("MYCONFIG");
+
  
 
   SRVBLE_init();

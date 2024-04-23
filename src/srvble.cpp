@@ -178,7 +178,7 @@ void SRVBLE_init(void) {
     pServer = NimBLEDevice::createServer();
     pServer->setCallbacks(new ServerCallbacks());
 
-    NimBLEService* pWifiCredService = pServer->createService("WIFICRED");
+    NimBLEService* pWifiCredService = pServer->createService("WIFI");
     NimBLECharacteristic* pSsidCharacteristic = pWifiCredService->createCharacteristic(
                                                "SSID",
                                                NIMBLE_PROPERTY::READ |
@@ -191,15 +191,28 @@ void SRVBLE_init(void) {
     pSsidCharacteristic->setValue("SSID");
     pSsidCharacteristic->setCallbacks(&chrCallbacks);
 #ifdef SKIP
+    NimBLECharacteristic* pPwdCharacteristic = pWifiCredService->createCharacteristic(
+                                               "PWD",
+                                               NIMBLE_PROPERTY::READ |
+                                               NIMBLE_PROPERTY::WRITE |
+                               /** Require a secure connection for read and write access */
+                                               NIMBLE_PROPERTY::READ_AUTHEN |  // only allow reading if paired / encrypted
+                                               NIMBLE_PROPERTY::WRITE_AUTHEN  // only allow writing if paired / encrypted
+                                              );
+
+    pSsidCharacteristic->setValue("PWDO");
+    pSsidCharacteristic->setCallbacks(&chrCallbacks);
+    #endif
+
     /** 2904 descriptors are a special case, when createDescriptor is called with
      *  0x2904 a NimBLE2904 class is created with the correct properties and sizes.
      *  However we must cast the returned reference to the correct type as the method
      *  only returns a pointer to the base NimBLEDescriptor class.
      */
-    NimBLE2904* pBeef2904 = (NimBLE2904*)pBeefCharacteristic->createDescriptor("2904");
+    NimBLE2904* pBeef2904 = (NimBLE2904*)pSsidCharacteristic->createDescriptor("2904");
     pBeef2904->setFormat(NimBLE2904::FORMAT_UTF8);
     pBeef2904->setCallbacks(&dscCallbacks);
-#endif
+
 
     NimBLEService* pBaadService = pServer->createService("BAAD");
     NimBLECharacteristic* pFoodCharacteristic = pBaadService->createCharacteristic(
@@ -228,12 +241,12 @@ void SRVBLE_init(void) {
     pC01Ddsc->setCallbacks(&dscCallbacks);
 
     /** Start the services when finished creating all Characteristics and Descriptors */
-    pDeadService->start();
+    pWifiCredService->start();
     pBaadService->start();
 
     NimBLEAdvertising* pAdvertising = NimBLEDevice::getAdvertising();
     /** Add the services to the advertisment data **/
-    pAdvertising->addServiceUUID(pDeadService->getUUID());
+    pAdvertising->addServiceUUID(pWifiCredService->getUUID());
     pAdvertising->addServiceUUID(pBaadService->getUUID());
     /** If your device is battery powered you may consider setting scan response
      *  to false as it will extend battery life at the expense of less data sent.
