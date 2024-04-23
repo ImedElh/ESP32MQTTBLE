@@ -1,20 +1,15 @@
-/*
-  Rui Santos
-  Complete project details at https://RandomNerdTutorials.com/esp32-save-data-permanently-preferences/
-  
-  Permission is hereby granted, free of charge, to any person obtaining a copy
-  of this software and associated documentation files.
-  
-  The above copyright notice and this permission notice shall be included in all
-  copies or substantial portions of the Software.
+/*------------------------------------------------------------------------------
+  Copyright (c) 2024 Imed El Hadef
+  Any reproduction without written permission is prohibited by law.
+  ------------------------------------------------------------------------------
+  Description :
+  Implementation of the ESP32 WIFI connection module
+  ------------------------------------------------------------------------------
 */
 
 
 #include "storage.h"
 #include "config.h"
-
-
-
 
 Storage::Storage():_started(false),name(""){
 
